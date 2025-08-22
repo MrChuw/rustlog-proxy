@@ -18,7 +18,7 @@ This project is a lightweight HTTP proxy that fetches recent messages from an up
 ```yml
 services:
   rustlog-proxy:
-    image: gcr.io/mrchuw/rustlog-proxy:master
+    image: ghcr.io/mrchuw/rustlog-proxy:master
     ports:
       - "18080:18080"
     volumes:
