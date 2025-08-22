@@ -22,7 +22,7 @@ services:
     ports:
       - "18080:18080"
     volumes:
-      - ./.env:/.env
+      - ./.env:/app/.env
     # environment:
       # - RECENT_URL=https://recent-messages.robotty.de/recent-messages/
       # - RUSTLOG_URL=https://example.com/

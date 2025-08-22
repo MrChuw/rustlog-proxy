@@ -3,7 +3,7 @@ services:
   rustlog-proxy:
     image: ghcr.io/mrchuw/rustlog-proxy:master
     volumes:
-      - ./.env:/.env
+      - ./.env:/app/.env
     ports:
       - "18080:18080"
     # environment:
