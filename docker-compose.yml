@@ -1,11 +1,9 @@
 
 services:
   rustlog-proxy:
-    image: gcr.io/distroless/static-debian12
+    image: gcr.io/mrchuw/rustlog-proxy:master
     volumes:
       - ./.env:/.env
-      - ./rustlog-proxy:/rustlog-proxy
-    command: ["/rustlog-proxy"]
     ports:
       - "18080:18080"
     # environment:
