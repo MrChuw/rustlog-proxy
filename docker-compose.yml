@@ -1,0 +1,15 @@
+
+services:
+  rustlog-proxy:
+    image: gcr.io/distroless/static-debian12
+    volumes:
+      - ./.env:/.env
+      - ./rustlog-proxy:/rustlog-proxy
+    command: ["/rustlog-proxy"]
+    ports:
+      - "18080:18080"
+    # environment:
+      # - RECENT_URL=https://example.com/recent-messages/
+      # - RUSTLOG_URL=https://example.com/
+      # - RUSTLOG_API=mysecretkey
+      # - LISTEN_ADDR=:8080   # opcional
