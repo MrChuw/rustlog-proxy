@@ -142,10 +142,31 @@ func main() {
 		close(idleConnsClosed)
 	}()
 
-	if err := fetchAndAddRustlogIDs(rustlogURLStr); err != nil {
-		<-idleConnsClosed
-		log.Println(LogInfo("Server stopped due to error: %v", err))
-		log.Println(LogInfo("Server stopped."))
+	delays := []time.Duration{
+		0 * time.Second,   // primeira tentativa imediata
+		30 * time.Second,  // segunda
+		60 * time.Second,  // terceira
+		120 * time.Second, // quarta
+		240 * time.Second, // quinta
+	}
+
+	for i, delay := range delays {
+		if delay > 0 {
+			time.Sleep(delay)
+		}
+
+		err := fetchAndAddRustlogIDs(rustlogURLStr)
+		if err == nil {
+			log.Println(LogInfo("fetchAndAddRustlogIDs succeeded"))
+			break
+		}
+
+		log.Println(LogInfo("Attempt %d failed: %v", i+1, err))
+
+		if i == len(delays)-1 {
+			log.Println(LogInfo("Server stopped due to error after retries"))
+			close(idleConnsClosed)
+		}
 	}
 	log.Println(LogInfo("Server started on %s", listenAddr))
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -264,7 +285,6 @@ func (h *Handlers) getRecentMessages(w http.ResponseWriter, r *http.Request) {
 				} else {
 					postReq.Header.Set("Content-Type", "application/json")
 					postReq.Header.Set("X-Api-Key", h.rustlogAPI)
-					log.Println(postReq.URL)
 
 					resp, err := h.client.Do(postReq)
 					if err != nil {
